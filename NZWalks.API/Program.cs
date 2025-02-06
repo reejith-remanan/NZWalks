@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using NZWalks.API.Data;
+using NZWalks.API.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +13,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<NZWalksDBContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("NZWalksConnectionString")));
-
+builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
+//builder.Services.AddScoped<IRegionRepository, InMemoryRegionRepository>();// switch data sources easily
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
