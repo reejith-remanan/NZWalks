@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Identity.Client;
@@ -6,6 +7,11 @@ using Microsoft.OpenApi.Any;
 using NZWalks.API.Data;
 using NZWalks.API.Models.Domain;
 using NZWalks.API.Models.DTO;
+<<<<<<< Updated upstream
+=======
+using NZWalks.API.Repositories;
+using System.Collections.Generic;
+>>>>>>> Stashed changes
 
 namespace NZWalks.API.Controllers
 {
@@ -15,9 +21,20 @@ namespace NZWalks.API.Controllers
     public class RegionsController : ControllerBase
     {
         private readonly NZWalksDBContext dbContext;
+<<<<<<< Updated upstream
         public RegionsController(NZWalksDBContext dBContext)
         {
             this.dbContext = dBContext;
+=======
+        private readonly IRegionRepository regionRepository;
+        private readonly IMapper mapper;
+
+        public RegionsController(NZWalksDBContext dBContext, IRegionRepository regionRepository, IMapper Mapper)
+        {
+            this.dbContext = dBContext;
+            this.regionRepository = regionRepository;
+            this.mapper = Mapper;
+>>>>>>> Stashed changes
         }
 
         public NZWalksDBContext DBContext { get; }
@@ -73,7 +90,8 @@ namespace NZWalks.API.Controllers
                 });
             }
 
-
+            //mapping using AutoMapper 
+            regionsDto = mapper.Map< List < RegionDto >>(regionsDto);
             //Return DTOs
             return Ok(regionsDto);
         }
@@ -94,7 +112,7 @@ namespace NZWalks.API.Controllers
                 return NotFound();
             }
 
-            return Ok(region);
+            return Ok(mapper.Map<RegionDto>(region));
 
 
         }
