@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using NZWalks.API.Data;
 using NZWalks.API.Models.Domain;
 using NZWalks.API.Models.DTO;
 using NZWalks.API.Repositories;
+using System.Collections.Generic;
 
 namespace NZWalks.API.Controllers
 {
@@ -18,11 +20,13 @@ namespace NZWalks.API.Controllers
     {
         private readonly NZWalksDBContext dbContext;
         private readonly IRegionRepository regionRepository;
+        private readonly IMapper mapper;
 
-        public RegionsController(NZWalksDBContext dBContext, IRegionRepository regionRepository)
+        public RegionsController(NZWalksDBContext dBContext, IRegionRepository regionRepository, IMapper mapper)
         {
             this.dbContext = dBContext;
             this.regionRepository = regionRepository;
+            this.mapper = mapper;
         }
 
         public NZWalksDBContext DBContext { get; }
@@ -78,7 +82,7 @@ namespace NZWalks.API.Controllers
                 });
             }
 
-
+            regionsDto = mapper.Map<List<RegionDto>>(regionsDomain);
             //Return DTOs
             return Ok(regionsDto);
         }
@@ -99,7 +103,7 @@ namespace NZWalks.API.Controllers
                 return NotFound();
             }
 
-            return Ok(region);
+            return Ok(mapper.Map<RegionDto>(region));
 
 
         }
