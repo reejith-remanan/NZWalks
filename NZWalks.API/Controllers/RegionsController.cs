@@ -33,7 +33,7 @@ namespace NZWalks.API.Controllers
 
 
 
-
+        //Get All regions
         // https://localhost:1234/api/Regions
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -87,6 +87,9 @@ namespace NZWalks.API.Controllers
             return Ok(regionsDto);
         }
 
+
+
+
         //Get region by Id
         //https://localhost:1234/api/Regions/{id}
         [HttpGet]
@@ -108,38 +111,53 @@ namespace NZWalks.API.Controllers
 
         }
 
-            //POST to create new region
-            //POST:https://localhost:1234/api/Regions
+
+
+
+
+        //POST to create new region
+        //POST:https://localhost:1234/api/Regions
         [HttpPost]
 
         public async Task<IActionResult> Create(AddRegionReqDto addRegionReqDto)
         {
-            // Map / covert DTO to Domain Model
-            var regionDomainModel = new Region
+           if(ModelState.IsValid)
             {
-                Code = addRegionReqDto.Code,
-                Name = addRegionReqDto.Name,
-                RegionImageUrl = addRegionReqDto.RegionImageUrl
-            };
+                // Map / covert DTO to Domain Model
+                var regionDomainModel = new Region
+                {
+                    Code = addRegionReqDto.Code,
+                    Name = addRegionReqDto.Name,
+                    RegionImageUrl = addRegionReqDto.RegionImageUrl
+                };
 
-            // Use domain model to create region
-            regionDomainModel = await regionRepository.CreateAsync(regionDomainModel);
-           
+                // Use domain model to create region
+                regionDomainModel = await regionRepository.CreateAsync(regionDomainModel);
 
-            //Map domain model back to DTO
-            var regionDto = new RegionDto
+
+                //Map domain model back to DTO
+                var regionDto = new RegionDto
+                {
+                    Id = regionDomainModel.Id,
+                    Code = regionDomainModel.Code,
+                    Name = regionDomainModel.Name,
+                    RegionImageUrl = regionDomainModel.RegionImageUrl
+                };
+
+                return CreatedAtAction(nameof(GetById), new { id = regionDto.Id }, regionDto);
+                //new { id = regionDto.Id }:
+                //This creates an anonymous object with route values required to call the GetById method.
+                //For example, if GetById expects an id parameter, this provides the value(regionDto.Id).
+            }
+           else
+
             {
-                Id = regionDomainModel.Id,
-                Code = regionDomainModel.Code,
-                Name = regionDomainModel.Name,
-                RegionImageUrl = regionDomainModel.RegionImageUrl
-            };
-
-            return CreatedAtAction(nameof(GetById), new { id = regionDto.Id }, regionDto);
-            //new { id = regionDto.Id }:
-            //This creates an anonymous object with route values required to call the GetById method.
-            //For example, if GetById expects an id parameter, this provides the value(regionDto.Id).
+                return BadRequest(ModelState);
+            }
         }
+
+
+
 
 
         //Update Region
@@ -176,6 +194,9 @@ namespace NZWalks.API.Controllers
         }
 
 
+
+
+
         //Delete Region
         //Delete:https://localhost:1234/api/Regions/{id}
         [HttpDelete]
@@ -183,21 +204,28 @@ namespace NZWalks.API.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
-            var regionDomainModel = await regionRepository.DeleteAsync(id);
-            if (regionDomainModel == null)
+            if(ModelState.IsValid)
             {
-                return NotFound();
+                var regionDomainModel = await regionRepository.DeleteAsync(id);
+                if (regionDomainModel == null)
+                {
+                    return NotFound();
+                }
+
+                var regionDto = new RegionDto
+                {
+                    Id = regionDomainModel.Id,
+                    Code = regionDomainModel.Code,
+                    Name = regionDomainModel.Name,
+                    RegionImageUrl = regionDomainModel.RegionImageUrl
+                };
+
+                return Ok(regionDto);
             }
-
-            var regionDto = new RegionDto
+            else
             {
-                Id = regionDomainModel.Id,
-                Code = regionDomainModel.Code,
-                Name = regionDomainModel.Name,
-                RegionImageUrl = regionDomainModel.RegionImageUrl
-            };
-
-            return Ok(regionDto);
+                return BadRequest(ModelState);
+            }
         }
     }
 }
