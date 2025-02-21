@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -17,8 +16,6 @@ namespace NZWalks.API.Controllers
     [Route("api/[controller]")]// https://localhost:1234/api/Regions
     [ApiController]// wii tell the application that the controller is for API use so it automatically validate the model state and gives a 400
                    // response back to the caller
-    [Authorize]
-
     public class RegionsController : ControllerBase
     {
         private readonly NZWalksDBContext dbContext;
