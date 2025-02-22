@@ -17,7 +17,7 @@ namespace NZWalks.API.Controllers
     [Route("api/[controller]")]// https://localhost:1234/api/Regions
     [ApiController]// wii tell the application that the controller is for API use so it automatically validate the model state and gives a 400
                    // response back to the caller
-    [Authorize] 
+  
     public class RegionsController : ControllerBase
     {
         private readonly NZWalksDBContext dbContext;
@@ -38,6 +38,7 @@ namespace NZWalks.API.Controllers
         //Get All regions
         // https://localhost:1234/api/Regions
         [HttpGet]
+        [Authorize(Roles = "Reader")]
         public async Task<IActionResult> GetAll()
         {
             //Hardcoded
@@ -97,6 +98,7 @@ namespace NZWalks.API.Controllers
         [HttpGet]
         [Route("{id}")]// when we pass an id with the url of the controller it will get mapped from the 'Route' to the input parameter in the method
                        // the name of the parameter in the 'Route' and method should be same.
+        [Authorize(Roles = "Reader")]
         public async Task<IActionResult> GetById(Guid id)
         {
             
@@ -120,7 +122,7 @@ namespace NZWalks.API.Controllers
         //POST to create new region
         //POST:https://localhost:1234/api/Regions
         [HttpPost]
-
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> Create(AddRegionReqDto addRegionReqDto)
         {
            if(ModelState.IsValid)
@@ -166,7 +168,7 @@ namespace NZWalks.API.Controllers
         //PUT to create new region
         //PUT:https://localhost:1234/api/Regions/{id}
         [HttpPut]
-
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> Update(Guid id, UpdateRegioneDto updateRegioneDto)
         {
             //Ckeck if region exists
@@ -203,7 +205,7 @@ namespace NZWalks.API.Controllers
         //Delete:https://localhost:1234/api/Regions/{id}
         [HttpDelete]
         [Route("{id:Guid}")]
-
+        [Authorize(Roles = "Writer, Reader")]
         public async Task<IActionResult> Delete(Guid id)
         {
             if(ModelState.IsValid)
