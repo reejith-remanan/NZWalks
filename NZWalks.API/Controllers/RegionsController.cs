@@ -11,6 +11,7 @@ using NZWalks.API.Models.Domain;
 using NZWalks.API.Models.DTO;
 using NZWalks.API.Repositories;
 using System.Collections.Generic;
+using System.Text.Json;
 
 namespace NZWalks.API.Controllers
 {
@@ -23,15 +24,18 @@ namespace NZWalks.API.Controllers
         private readonly NZWalksDBContext dbContext;
         private readonly IRegionRepository regionRepository;
         private readonly IMapper mapper;
+        private readonly ILogger<RegionsController> logger;
 
-        public RegionsController(NZWalksDBContext dBContext, IRegionRepository regionRepository, IMapper mapper)
+        public RegionsController(NZWalksDBContext dBContext, IRegionRepository regionRepository, IMapper mapper,
+                                 ILogger<RegionsController> logger)
         {
             this.dbContext = dBContext;
             this.regionRepository = regionRepository;
             this.mapper = mapper;
+            this.logger = logger;
         }
 
-        public NZWalksDBContext DBContext { get; }
+        //public NZWalksDBContext DBContext { get; }
 
 
 
@@ -64,11 +68,18 @@ namespace NZWalks.API.Controllers
 
             //From DB
 
+
+            logger.LogInformation("GetAll Regions action method was invoked"); // works if .MinimumLevel.Information()
+
+            logger.LogWarning("This is a Warning log");
+
+            logger.LogError("This is a Error log");
             var regions = await dbContext.Regions.ToListAsync(); // here we sending the domain model to the client(swagger) coupled
 
+            logger.LogInformation($"Finished GetAll Regions request with data: {JsonSerializer.Serialize(regions)}");
+
             return Ok(regions); // here we are passing the domain model itself to the api viewer swagger not a good practice
-
-
+          
             //Get data from DB - Domain Models
             var regionsDomain = await regionRepository.GetAllAsync();
 
