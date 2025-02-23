@@ -35,7 +35,7 @@ namespace NZWalks.API.Controllers
             this.logger = logger;
         }
 
-        //public NZWalksDBContext DBContext { get; }
+        
 
 
 
@@ -179,6 +179,7 @@ namespace NZWalks.API.Controllers
         //PUT to create new region
         //PUT:https://localhost:1234/api/Regions/{id}
         [HttpPut]
+        [Route("{id:Guid}")]
         [Authorize(Roles = "Writer")]
         public async Task<IActionResult> Update(Guid id, UpdateRegioneDto updateRegioneDto)
         {
