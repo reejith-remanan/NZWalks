@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using NZWalks.API.Models.Domain;
 using NZWalks.API.Models.DTO;
 using NZWalks.API.Repositories;
 
@@ -61,10 +62,24 @@ namespace NZWalks.API.Controllers
 
         [HttpPost]
         [Route("Create")]
-
-        public async Task<IActionResult> Create([FromBody] DifficultyDto difficulty)
+        public async Task<IActionResult> Create([FromBody] AddDifficultyReqDto difficulty)
         {
-            return Ok("Success");
+            var difficultyModel = mapper.Map<Difficulty>(difficulty);
+
+            var responseDifficulty = await difficultyRepository.CreateAsync(difficultyModel);
+
+            return Ok(mapper.Map<AddDifficultyReqDto>(responseDifficulty));
+
         }
+
+        [HttpPut]
+        [Route("Update/{id}")]
+        public async Task<IActionResult> update([FromBody] UpdateDifficultyDto updateDifficultyDto, [FromRoute] Guid id)
+        {
+            // var difficultyModel = mapper.Map<Difficulty>(updateDifficultyDto);
+            return Ok("Success");
+
+        }
+
     }
 }

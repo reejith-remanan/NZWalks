@@ -217,7 +217,7 @@ namespace NZWalks.API.Controllers
         //Delete:https://localhost:1234/api/Regions/{id}
         [HttpDelete]
         [Route("{id:Guid}")]
-        [Authorize(Roles = "Writer, Reader")]
+        //[Authorize(Roles = "Writer, Reader")]
         public async Task<IActionResult> Delete(Guid id)
         {
             if(ModelState.IsValid)

@@ -10,5 +10,6 @@ namespace NZWalks.API.Repositories
 
         Task<Difficulty?> DeleteAsync(Guid id);
 
+        Task<Difficulty> CreateAsync(Difficulty difficulty);
     }
 }

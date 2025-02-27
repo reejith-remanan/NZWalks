@@ -14,6 +14,13 @@ namespace NZWalks.API.Repositories
             this.dBContext = dBContext;
         }
 
+        public async Task<Difficulty> CreateAsync(Difficulty difficulty)
+        {
+            await dBContext.Difficulties.AddAsync(difficulty);
+            await dBContext.SaveChangesAsync();
+            return difficulty;
+        }
+
         public async Task<Difficulty?> DeleteAsync(Guid id)
         {
             var dataExist = await dBContext.Difficulties.FirstOrDefaultAsync(x => x.Id == id);
