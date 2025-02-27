@@ -29,5 +29,42 @@ namespace NZWalks.API.Controllers
 
             return Ok(difficultyDto);
         }
+
+        [HttpGet]
+        [Route("GetById/{id}")]
+
+        public async Task<IActionResult> GetByID(Guid id)
+        {
+            var difficulty = await difficultyRepository.GetByIdAsync(id);
+
+            if (difficulty == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(mapper.Map<DifficultyDto>(difficulty));
+        }
+
+        [HttpDelete]
+        [Route("Delete/{id}")]
+
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var difficulty = await difficultyRepository.DeleteAsync(id);
+
+            if(difficulty == null)
+            {
+                return NotFound();
+            }
+            return Ok(mapper.Map<DifficultyDto>(difficulty));
+        }
+
+        [HttpPost]
+        [Route("Create")]
+
+        public async Task<IActionResult> Create([FromBody] DifficultyDto difficulty)
+        {
+            return Ok("Success");
+        }
     }
 }
