@@ -78,6 +78,8 @@ namespace NZWalks.API.Controllers
         {
             // var difficultyModel = mapper.Map<Difficulty>(updateDifficultyDto);
             return Ok("Success");
+            //dmfmdsm
+            //sd,mf.dsm,
 
         }
 
