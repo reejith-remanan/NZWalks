@@ -40,9 +40,21 @@ namespace NZWalks.API.Repositories
             return (response); 
         }
 
-        public Task<Difficulty?> GetByIdAsync(Guid id)
+        public async Task<Difficulty?> GetByIdAsync(Guid id)
         {
-            return(dBContext.Difficulties.FirstOrDefaultAsync(x=> x.Id == id));
+            return(await dBContext.Difficulties.FirstOrDefaultAsync(x=> x.Id == id));
+        }
+
+        public async Task<Difficulty> UpdateAsync(Difficulty difficulty, Guid id)
+        {
+            var existingDifficulty = await dBContext.Difficulties.FirstOrDefaultAsync(x => x.Id ==  id);
+            if (existingDifficulty != null)
+            {
+                existingDifficulty.Name = difficulty.Name;
+                await dBContext.SaveChangesAsync();
+                return existingDifficulty;
+            }
+            return null;
         }
     }
 }

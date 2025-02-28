@@ -136,7 +136,7 @@ namespace NZWalks.API.Controllers
         [Authorize(Roles = "Writer")]
         public async Task<IActionResult> Create(AddRegionReqDto addRegionReqDto)
         {
-           if(ModelState.IsValid)
+           if(ModelState.IsValid)// this is only required if you dont have [ApiController] mentioned in the controller
             {
                 // Map / covert DTO to Domain Model
                 var regionDomainModel = new Region
@@ -163,12 +163,11 @@ namespace NZWalks.API.Controllers
                 //new { id = regionDto.Id }:
                 //This creates an anonymous object with route values required to call the GetById method.
                 //For example, if GetById expects an id parameter, this provides the value(regionDto.Id).
-            }
+           }
            else
-
-            {
+           {
                 return BadRequest(ModelState);
-            }
+           }
         }
 
 

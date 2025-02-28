@@ -76,10 +76,17 @@ namespace NZWalks.API.Controllers
         [Route("Update/{id}")]
         public async Task<IActionResult> update([FromBody] UpdateDifficultyDto updateDifficultyDto, [FromRoute] Guid id)
         {
-            // var difficultyModel = mapper.Map<Difficulty>(updateDifficultyDto);
-            return Ok("Success");
-            //dmfmdsm
-            //sd,mf.dsm,
+            var difficultyModel = mapper.Map<Difficulty>(updateDifficultyDto);
+
+
+            var response = await difficultyRepository.UpdateAsync(difficultyModel, id);
+
+            if (response == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(mapper.Map<DifficultyDto>(response));
 
         }
 
