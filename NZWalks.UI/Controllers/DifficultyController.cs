@@ -1,63 +1,61 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NZWalks.UI.Models;
 using NZWalks.UI.Models.DTO;
-using System.Text;
 using System.Text.Json;
+using System.Text;
 
 namespace NZWalks.UI.Controllers
 {
-    public class RegionsController : Controller
+    public class DifficultyController : Controller
     {
         private readonly IHttpClientFactory httpClientFactory;
 
-        public RegionsController(IHttpClientFactory httpClientFactory)
+        public DifficultyController(IHttpClientFactory httpClientFactory)
         {
             this.httpClientFactory = httpClientFactory;
         }
-
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            List<RegionDto> response = new List<RegionDto>();
+            List<DifficultyDto> response = new List<DifficultyDto>();
 
             try
             {
-                //Get All Regions from Web API
-                var client = httpClientFactory.CreateClient();// use this to 'client' to consume the Web API
+                var client = httpClientFactory.CreateClient();
 
-                var httpResponseMessage = await client.GetAsync("https://localhost:7202/api/Regions");
+                var responseMessage = await client.GetAsync("https://localhost:7202/api/Difficulty/Get");
 
-                httpResponseMessage.EnsureSuccessStatusCode();// make sure the response is sucess if not will throw an error
-            
-                response.AddRange(await httpResponseMessage.Content.ReadFromJsonAsync<IEnumerable<RegionDto>>());
-            
+
+                responseMessage.EnsureSuccessStatusCode();
+
+                response.AddRange(await responseMessage.Content.ReadFromJsonAsync<IEnumerable<DifficultyDto>>());
             }
             catch (Exception ex)
             {
-                //log the exception
-                throw;
+
+                throw new Exception(ex.Message);
             }
+
 
             return View(response);
         }
 
-
         [HttpGet]
-        public IActionResult Add()
+        public async Task<IActionResult> Add()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(AddRegionViewModel addRegionViewModel)
+        public async Task<IActionResult> Add(AddDifficultyViewModel model)
         {
             var client = httpClientFactory.CreateClient();
 
             var httpRequestMessage = new HttpRequestMessage()
             {
                 Method = HttpMethod.Post,
-                RequestUri = new Uri("https://localhost:7202/api/Regions"),
-                Content = new StringContent(JsonSerializer.Serialize(addRegionViewModel), Encoding.UTF8, "application/json")
+                RequestUri = new Uri("https://localhost:7202/api/Difficulty/Create"),
+                Content = new StringContent(JsonSerializer.Serialize(model), Encoding.UTF8, "application/json")
             };
 
             var httpResponseMessage = await client.SendAsync(httpRequestMessage);
@@ -66,13 +64,12 @@ namespace NZWalks.UI.Controllers
 
             var response = await httpResponseMessage.Content.ReadFromJsonAsync<RegionDto>();
 
-            if(response is not null)
+            if (response is not null)
             {
-                return RedirectToAction("Index", "Regions");
+                return RedirectToAction("Index","Difficulty");
             }
 
             return View();
-
         }
 
         [HttpGet]
@@ -80,55 +77,53 @@ namespace NZWalks.UI.Controllers
         {
             var client = httpClientFactory.CreateClient();
 
-            var response =  await client.GetFromJsonAsync<RegionDto>($"https://localhost:7202/api/Regions/{id.ToString()}");
-            
-            if(response is not null)
+            var response = await client.GetFromJsonAsync<DifficultyDto>($"https://localhost:7202/api/Difficulty/GetById/{id.ToString()}");
+
+            if (response is not null)
             {
                 return View(response);
             }
 
             return View(null);
-            
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(RegionDto request)
+        public async Task<IActionResult> Edit(DifficultyDto model)
         {
             var client = httpClientFactory.CreateClient();
 
             var httpRequestMessage = new HttpRequestMessage()
             {
                 Method = HttpMethod.Put,
-                RequestUri = new Uri($"https://localhost:7202/api/Regions/{request.Id}"),
-                Content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json")
+                RequestUri = new Uri($"https://localhost:7202/api/Difficulty/Update/{model.Id}"),
+                Content = new StringContent(JsonSerializer.Serialize(model), Encoding.UTF8, "application/json")
             };
-        
+
 
             var httpResponseMessage = await client.SendAsync(httpRequestMessage);
             httpResponseMessage.EnsureSuccessStatusCode();
 
             var response = await httpResponseMessage.Content.ReadFromJsonAsync<RegionDto>();
 
-            if(response is not null)
+            if (response is not null)
             {
-                return RedirectToAction("Edit", "Regions");
+                return RedirectToAction("Index", "Difficulty");
             }
 
-            return View() ;
-
+            return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(RegionDto request)
+        public async Task<IActionResult> Delete(DifficultyDto model)
         {
             try
             {
                 var client = httpClientFactory.CreateClient();
 
-                var httpResponseMessage = await client.DeleteAsync($"https://localhost:7202/api/Regions/{request.Id}");
+                var httpResponseMessage = await client.DeleteAsync($"https://localhost:7202/api/Difficulty/Delete/{model.Id}");
                 httpResponseMessage.EnsureSuccessStatusCode();
 
-                return RedirectToAction("Index", "Regions");
+                return RedirectToAction("Index", "Difficulty");
             }
             catch (Exception ex)
             {
